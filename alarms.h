@@ -45,8 +45,8 @@ typedef enum {
     Alarm_SelftestFailed = 16,
     Alarm_MotorFault = 17,
     Alarm_HomingFail = 18,
-    Alarm_CS_fail = 19,
-    Alarm_AlarmMax = Alarm_CS_fail
+    Alarm_CheckSumFail = 19,
+    Alarm_AlarmMax = Alarm_CheckSumFail
 } alarm_code_t;
 
 typedef struct {

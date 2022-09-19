@@ -440,8 +440,8 @@ bool gc_checksum (char *block, char **message)
      }
     else { 
       block[0]='\0';                              //delete Line
-          report_message("CS_fail\0", Message_Plain);
-          system_raise_alarm(Alarm_CS_fail);
+          report_message("CheckSumFail\0", Message_Plain);
+          system_raise_alarm(Alarm_CheckSumFail);
  //        state_set(STATE_ALARM);
       return false;
      }

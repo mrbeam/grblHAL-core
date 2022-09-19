@@ -45,8 +45,8 @@ PROGMEM static const alarm_detail_t alarm_detail[] = {
     { Alarm_SelftestFailed, "Power on selftest (POS) failed." },
     { Alarm_MotorFault, "Motor fault." },
     { Alarm_HomingFail, "Homing fail. Bad configuration." },
-    { Alarm_CS_fail, "CS fail"}
-};
+    { Alarm_CheckSumFail, "CheckSum fail"}
+    };
 
 static alarm_details_t details = {
     .alarms = alarm_detail,
