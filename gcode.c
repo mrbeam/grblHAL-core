@@ -399,6 +399,59 @@ static status_code_t init_sync_motion (plan_line_data_t *pl_data, float pitch)
     return Status_OK;
 }
 
+
+bool gc_checksum (char *block, char **message)
+{
+   // Testcase G1X248.04S50F1479*211
+   
+    char c, *s1, *s2, *comment = NULL;
+    int8_t mrb_checksum_gcode = 0;
+    int8_t mrb_checksum       = 0;
+    char CS_number[4];
+
+    s1 = s2 = block;
+    
+    // Checksum * detect
+    while(*s1 !='\0' && *s1 !='*'){
+        mrb_checksum += *s1;            //calc CS
+        s1++;                           //iterate 
+     }
+    
+     if(*s1 == '*') {                     //check if CS or EOF
+       *s1 = '\0';
+       s1++;
+       int8_t i = 0 ;
+       while ((*s1 >= '0') && (*s1 <= '9')) {
+                CS_number[i] = *s1;
+                i++;
+                CS_number[i] = '\0';
+                mrb_checksum_gcode *= 10;
+                mrb_checksum_gcode += (*s1-'0');
+                s1++;
+       }
+    if (mrb_checksum == mrb_checksum_gcode){  
+   
+ //      if(*message = malloc(5)){                 //Pointer Pointer not Null if Mem is free
+ //           memcpy(*message, CS_number, 4);
+            report_message(CS_number, Message_Plain);
+ //      }   
+      return true;
+      
+     }
+    else { 
+      block[0]='\0';                              //delete Line
+          report_message("CS_fail\0", Message_Plain);
+          system_raise_alarm(Alarm_CS_fail);
+ //        state_set(STATE_ALARM);
+      return false;
+     }
+    }
+  
+    return false;
+
+}
+
+
 // Remove whitespace, control characters, comments and if block delete is active block delete lines
 // else the block delete character. Remaining characters are converted to upper case.
 // If the driver handles message comments then the first is extracted and returned in a dynamically
@@ -583,6 +636,10 @@ status_code_t gc_execute_block(char *block)
         }
         return Status_OK;
     }
+    
+    bool cs_mrbeam = gc_checksum (block, &message);
+     if(message) { free(message);}
+
 
     // Determine if the line is a program start/end marker.
     // Old comment from protocol.c:
