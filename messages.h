@@ -42,7 +42,8 @@ typedef enum {
     Message_CycleStartToRerun = 14,         //!< 14
     Message_ReferenceTLOEstablished = 15,   //!< 15
     Message_MotorFault = 16,                //!< 16
-    Message_NextMessage                     //!< 17 - next unassigned message number.
+    Message_Debug = 17,                     //!< 17
+    Message_NextMessage                     //!< 18 - next unassigned message number.
 } message_code_t;
 
 typedef struct {
@@ -67,7 +68,8 @@ PROGMEM static const message_t messages[] = {
     { .id = Message_HomingCycleRequired, .msg = "Homing cycle required" },
     { .id = Message_CycleStartToRerun, .msg = "Press cycle start to rerun job" },
     { .id = Message_ReferenceTLOEstablished, .msg = "Reference tool length offset established" },
-    { .id = Message_MotorFault, .msg = "Motor fault" }
+    { .id = Message_MotorFault, .msg = "Motor fault" },
+    { .id = Message_Debug, .msg = "Debug" }
 };
 
 #endif

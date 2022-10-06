@@ -33,6 +33,7 @@
 #include "sleep.h"
 #include "protocol.h"
 #include "machine_limits.h"
+#include "hardware/watchdog.h"
 
 #ifndef RT_QUEUE_SIZE
 #define RT_QUEUE_SIZE 8 // must be a power of 2
@@ -756,6 +757,10 @@ ISR_CODE bool ISR_FUNC(protocol_enqueue_realtime_command)(char c)
             if(!hal.control.get_state().e_stop)
                 mc_reset();
             drop = true;
+            break;
+        
+        case CMD_HARD_RESET :
+            watchdog_reboot(0x00000000, 0x00000000, 100);    
             break;
 
 #if COMPATIBILITY_LEVEL == 0

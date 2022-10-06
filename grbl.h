@@ -101,6 +101,7 @@
 #define CMD_EXIT 0x03 // ctrl-C (ETX)
 #define CMD_REBOOT 0x14 // ctrl-T (DC4) - only acted upon if preceded by 0x1B (ESC)
 #define CMD_RESET 0x18 // ctrl-X (CAN)
+#define CMD_HARD_RESET '|' // Reset via Bootloader-hard reset
 #define CMD_STOP 0x19 // ctrl-Y (EM)
 #define CMD_STATUS_REPORT_LEGACY '?'
 #define CMD_CYCLE_START_LEGACY '~'
