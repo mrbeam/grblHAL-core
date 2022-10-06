@@ -539,6 +539,8 @@ typedef struct {
 // Initialize the parser
 void gc_init (void);
 
+bool gc_checksum (char *block, char **message);
+
 char *gc_normalize_block (char *block, char **message);
 
 // Execute one block of rs275/ngc/g-code

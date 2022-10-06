@@ -554,15 +554,15 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 //#define DEFAULT_JOG_LIMIT_ENABLE
 //#define DEFAULT_HARD_LIMIT_ENABLE
 //#define DEFAULT_INVERT_PROBE_BIT
-//#define DEFAULT_LASER_MODE
+#define DEFAULT_LASER_MODE
 //#define DEFAULT_LATHE_MODE
-//#define DEFAULT_HOMING_ENABLE
+#define DEFAULT_HOMING_ENABLE
 //#define DEFAULT_HOMING_ALLOW_MANUAL
 //#define DEFAULT_HOMING_DIR_MASK 0 // move positive dir
-//#define DEFAULT_HOMING_FEED_RATE 25.0f // mm/min
-//#define DEFAULT_HOMING_SEEK_RATE 500.0f // mm/min
+#define DEFAULT_HOMING_FEED_RATE 100.0f // mm/min
+#define DEFAULT_HOMING_SEEK_RATE 500.0f // mm/min
 //#define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
-//#define DEFAULT_HOMING_PULLOFF 1.0f // mm
+#define DEFAULT_HOMING_PULLOFF 1.0f // mm
 
 //#define DEFAULT_A_STEPS_PER_MM 250.0f
 //#define DEFAULT_A_MAX_RATE 500.0f // mm/min
@@ -591,11 +591,11 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 // If homing is enabled, homing init lock sets Grbl into an alarm state upon power up or a soft reset.
 // This forces the user to perform the homing cycle before doing anything else. This is
 // mainly a safety feature to remind the user to home, since position is unknown to Grbl.
-//#define DEFAULT_HOMING_INIT_LOCK // Default disabled. Uncomment to enable.
+#define DEFAULT_HOMING_INIT_LOCK // Default disabled. Uncomment to enable.
 
 // If homing init lock is enabled this sets Grbl into an alarm state upon power up or a soft reset.
 // To allow a soft reset to override the lock uncomment the line below.
-//#define DEFAULT_HOMING_OVERRIDE_LOCKS // Default disabled. Uncomment to enable.
+#define DEFAULT_HOMING_OVERRIDE_LOCKS // Default disabled. Uncomment to enable.
 
 // Define the homing cycle patterns with bitmasks. The homing cycle first performs a search mode
 // to quickly engage the limit switches, followed by a slower locate mode, and finished by a short
@@ -613,8 +613,8 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 // will not be affected by pin sharing.
 // NOTE: Defaults are set for a traditional 3-axis CNC machine. Z-axis first to clear, followed by X & Y.
 
-//#define HOMING_CYCLE_0 (Z_AXIS_BIT)             // REQUIRED: First move Z to clear workspace.
-//#define HOMING_CYCLE_1 (X_AXIS_BIT|Y_AXIS_BIT)  // OPTIONAL: Then move X,Y at the same time.
+#define HOMING_CYCLE_0 (X_AXIS_BIT)    // REQUIRED: Homing the X axis
+#define HOMING_CYCLE_1 (Y_AXIS_BIT)    // REQUIRED: Homing the Y axis
 //#define HOMING_CYCLE_2 0                        // OPTIONAL: Uncomment and add axes mask to enable
 #if N_AXIS > 3
 //#define HOMING_CYCLE_3 0                        // OPTIONAL: Uncomment and add axes mask to enable
