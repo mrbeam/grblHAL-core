@@ -495,7 +495,7 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 //#define DEFAULT_NO_REPORT_WORK_COORD_OFFSET
 //#define DEFAULT_NO_REPORT_OVERRIDES
 //#define DEFAULT_REPORT_PARSER_STATE
-//#define DEFAULT_REPORT_ALARM_SUBSTATE
+#define DEFAULT_REPORT_ALARM_SUBSTATE
 
 // G92 offsets is by default stored to non-volatile storage (NVS) on changes and restored on startup
 // if COMPATIBILITY_LEVEL is <= 1. If COMPATIBILITY_LEVEL is <= 1 then setting $384 can be used to change this at run-time.
@@ -529,8 +529,8 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 //#define DEFAULT_X_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
 //#define DEFAULT_Y_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
 //#define DEFAULT_Z_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
-//#define DEFAULT_X_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
-//#define DEFAULT_Y_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
+#define DEFAULT_X_MAX_TRAVEL 507.0f // mm NOTE: Must be a positive value.
+#define DEFAULT_Y_MAX_TRAVEL 390.0f // mm NOTE: Must be a positive value.
 //#define DEFAULT_Z_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
 //#define DEFAULT_X_CURRENT 0.0 // amps
 //#define DEFAULT_Y_CURRENT 0.0 // amps

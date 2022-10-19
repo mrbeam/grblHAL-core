@@ -35,6 +35,7 @@
 #include "state_machine.h"
 #include "nvs_buffer.h"
 #include "stream.h"
+#include "hardware/watchdog.h"
 #ifdef ENABLE_BACKLASH_COMPENSATION
 #include "motion_control.h"
 #endif
@@ -266,7 +267,7 @@ int grbl_enter (void)
 
         // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
         report_init_message();
-
+        watchdog_update();
         if(state_get() == STATE_ESTOP)
             state_set(STATE_ALARM);
 
