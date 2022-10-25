@@ -267,7 +267,7 @@ int grbl_enter (void)
 
         // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
         report_init_message();
-        watchdog_update();
+        watchdog_update(); // Updates the watchdog that is set in the bootloader, ensures that the WD is not reset upon the intial boot sequence.
         if(state_get() == STATE_ESTOP)
             state_set(STATE_ALARM);
 
