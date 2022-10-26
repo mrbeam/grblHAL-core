@@ -96,7 +96,7 @@ __NOTE:__ if switching to a level > 1 please reset non-volatile storage with \a 
 // defined at (http://corexy.com/theory.html). Motors are assumed to positioned and wired exactly as
 // described, if not, motions may move in strange directions. Grbl requires the CoreXY A and B motors
 // have the same steps per mm internally.
-//#define COREXY // Default disabled. Uncomment to enable.
+#define COREXY // Default disabled. Uncomment to enable.
 
 // Add a short delay for each block processed in Check Mode to
 // avoid overwhelming the sender with fast reply messages.
@@ -494,8 +494,8 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 //#define DEFAULT_NO_REPORT_PIN_STATE
 //#define DEFAULT_NO_REPORT_WORK_COORD_OFFSET
 //#define DEFAULT_NO_REPORT_OVERRIDES
-//#define DEFAULT_REPORT_PARSER_STATE
-//#define DEFAULT_REPORT_ALARM_SUBSTATE
+#define DEFAULT_REPORT_PARSER_STATE
+#define DEFAULT_REPORT_ALARM_SUBSTATE
 
 // G92 offsets is by default stored to non-volatile storage (NVS) on changes and restored on startup
 // if COMPATIBILITY_LEVEL is <= 1. If COMPATIBILITY_LEVEL is <= 1 then setting $384 can be used to change this at run-time.
@@ -529,8 +529,8 @@ __NOTE:__ these definitions are only referenced in this file. Do __NOT__ change!
 //#define DEFAULT_X_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
 //#define DEFAULT_Y_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
 //#define DEFAULT_Z_ACCELERATION (10.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
-//#define DEFAULT_X_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
-//#define DEFAULT_Y_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
+#define DEFAULT_X_MAX_TRAVEL 507.0f // mm NOTE: Must be a positive value. Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
+#define DEFAULT_Y_MAX_TRAVEL 390.0f // mm NOTE: Must be a positive value. Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
 //#define DEFAULT_Z_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.
 //#define DEFAULT_X_CURRENT 0.0 // amps
 //#define DEFAULT_Y_CURRENT 0.0 // amps
