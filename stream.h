@@ -62,7 +62,7 @@ Helper functions for saving away and restoring a stream input buffer. _Not refer
 
 // Serial baud rate
 #ifndef BAUD_RATE
-#define BAUD_RATE 115200
+#define BAUD_RATE 250000
 #endif
 
 // Value to be returned from input stream when no data is available
