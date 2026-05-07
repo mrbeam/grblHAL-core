@@ -519,7 +519,7 @@ by a driver or a plugin.
 #endif
 
 #if !defined ENABLE_BACKLASH_COMPENSATION || defined __DOXYGEN__
-#define ENABLE_BACKLASH_COMPENSATION Off
+#define ENABLE_BACKLASH_COMPENSATION On
 #endif
 
 #if COMPATIBILITY_LEVEL == 0 || defined __DOXYGEN__
@@ -697,7 +697,7 @@ the `$G` command.
 \internal Bit 9 in settings.status_report.
 */
 #if !defined DEFAULT_REPORT_PARSER_STATE || defined __DOXYGEN__
-#define DEFAULT_REPORT_PARSER_STATE Off // Default off. Set to \ref On or 1 to enable.
+#define DEFAULT_REPORT_PARSER_STATE On // Default off. Set to \ref On or 1 to enable.
 #endif
 
 /*! \def DEFAULT_REPORT_ALARM_SUBSTATE
@@ -711,7 +711,7 @@ the real time report.
 \internal Bit 10 in settings.status_report.
 */
 #if !defined DEFAULT_REPORT_ALARM_SUBSTATE || defined __DOXYGEN__
-#define DEFAULT_REPORT_ALARM_SUBSTATE Off // Default off. Set to \ref On or 1 to enable.
+#define DEFAULT_REPORT_ALARM_SUBSTATE On // Default off. Set to \ref On or 1 to enable.
 #endif
 
 /*! \def DEFAULT_REPORT_RUN_SUBSTATE
@@ -791,7 +791,7 @@ __NOTE:__ only one mode can be enabled.
  */
 ///@{
 #if !defined DEFAULT_LASER_MODE || defined __DOXYGEN__
-#define DEFAULT_LASER_MODE Off
+#define DEFAULT_LASER_MODE On
 #endif
 #if !defined DEFAULT_LATHE_MODE || defined __DOXYGEN__
 #define DEFAULT_LATHE_MODE Off
@@ -1486,7 +1486,7 @@ Requires homing cycles to be defined by \ref DEFAULT_HOMING_CYCLE_0 - \ref DEFAU
 \internal Bit 0 in settings.homing.flags.
 */
 #if !defined DEFAULT_HOMING_ENABLE || defined __DOXYGEN__
-#define DEFAULT_HOMING_ENABLE Off // Default disabled. Set to \ref On or 1 to enable.
+#define DEFAULT_HOMING_ENABLE On // Default disabled. Set to \ref On or 1 to enable.
 #endif
 
 /*! /def DEFAULT_HOMING_SINGLE_AXIS_COMMANDS
@@ -1508,7 +1508,7 @@ mainly a safety feature to remind the user to home, since position is unknown to
 \internal Bit 2 in settings.homing.flags.
 */
 #if !defined DEFAULT_HOMING_INIT_LOCK || defined __DOXYGEN__
-#define DEFAULT_HOMING_INIT_LOCK Off // Default disabled. Set to \ref On or 1 to enable.
+#define DEFAULT_HOMING_INIT_LOCK On // Default disabled. Set to \ref On or 1 to enable.
 #endif
 
 /*! /def DEFAULT_HOMING_FORCE_SET_ORIGIN
@@ -1554,7 +1554,7 @@ To allow a soft reset to override the lock uncomment the line below.
 \internal Bit 6 in settings.homing.flags.
 */
 #if !defined DEFAULT_HOMING_OVERRIDE_LOCKS || defined __DOXYGEN__
-#define DEFAULT_HOMING_OVERRIDE_LOCKS Off // Default disabled. Set to \ref On or 1 to enable.
+#define DEFAULT_HOMING_OVERRIDE_LOCKS On // Default disabled. Set to \ref On or 1 to enable.
 #endif
 
 /*! /def DEFAULT_HOMING_USE_LIMIT_SWITCHES
@@ -1591,7 +1591,7 @@ Unset bits in the mask results in movement in positive direction.
 */
 ///@{
 #if !defined DEFAULT_HOMING_FEED_RATE || defined __DOXYGEN__
-#define DEFAULT_HOMING_FEED_RATE 25.0f // mm/min
+#define DEFAULT_HOMING_FEED_RATE 100.0f // mm/min
 #endif
 ///@}
 
@@ -1599,7 +1599,7 @@ Unset bits in the mask results in movement in positive direction.
 */
 ///@{
 #if !defined DEFAULT_HOMING_SEEK_RATE || defined __DOXYGEN__
-#define DEFAULT_HOMING_SEEK_RATE 500.0f // mm/min
+#define DEFAULT_HOMING_SEEK_RATE 2000.0f // mm/min
 #endif
 ///@}
 
@@ -1607,7 +1607,7 @@ Unset bits in the mask results in movement in positive direction.
 */
 ///@{
 #if !defined DEFAULT_HOMING_DEBOUNCE_DELAY || defined __DOXYGEN__
-#define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
+#define DEFAULT_HOMING_DEBOUNCE_DELAY 100 // msec (0-65k)
 #endif
 ///@}
 
@@ -2206,10 +2206,10 @@ Adds directory entries in $F and $F+ output to allow hierarchical navigation of 
  */
 ///@{
 #if !defined DEFAULT_X_STEPS_PER_MM || defined __DOXYGEN__
-#define DEFAULT_X_STEPS_PER_MM 250.0f
+#define DEFAULT_X_STEPS_PER_MM 100.0f
 #endif
 #if !defined DEFAULT_Y_STEPS_PER_MM || defined __DOXYGEN__
-#define DEFAULT_Y_STEPS_PER_MM 250.0f
+#define DEFAULT_Y_STEPS_PER_MM 100.0f
 #endif
 #if !defined DEFAULT_Z_STEPS_PER_MM || defined __DOXYGEN__
 #define DEFAULT_Z_STEPS_PER_MM 250.0f
@@ -2239,10 +2239,10 @@ Adds directory entries in $F and $F+ output to allow hierarchical navigation of 
 */
 ///@{
 #if !defined DEFAULT_X_MAX_RATE || defined __DOXYGEN__
-#define DEFAULT_X_MAX_RATE 500.0f // mm/min
+#define DEFAULT_X_MAX_RATE 10000.0f // mm/min
 #endif
 #if !defined DEFAULT_Y_MAX_RATE || defined __DOXYGEN__
-#define DEFAULT_Y_MAX_RATE 500.0f // mm/min
+#define DEFAULT_Y_MAX_RATE 10000.0f // mm/min
 #endif
 #if !defined DEFAULT_Z_MAX_RATE || defined __DOXYGEN__
 #define DEFAULT_Z_MAX_RATE 500.0f // mm/min
@@ -2271,10 +2271,10 @@ Adds directory entries in $F and $F+ output to allow hierarchical navigation of 
 */
 ///@{
 #if !defined DEFAULT_X_ACCELERATION || defined __DOXYGEN__
-#define DEFAULT_X_ACCELERATION 10.0f // mm/sec^2
+#define DEFAULT_X_ACCELERATION 3000.0f // mm/sec^2
 #endif
 #if !defined DEFAULT_Y_ACCELERATION || defined __DOXYGEN__
-#define DEFAULT_Y_ACCELERATION 10.0f // mm/sec^2
+#define DEFAULT_Y_ACCELERATION 1000.0f // mm/sec^2
 #endif
 #if !defined DEFAULT_Z_ACCELERATION || defined __DOXYGEN__
 #define DEFAULT_Z_ACCELERATION 10.0f // mm/sec^2
@@ -2336,10 +2336,10 @@ __NOTE:__ Must be a positive values.
 */
 ///@{
 #if !defined DEFAULT_X_MAX_TRAVEL || defined __DOXYGEN__
-#define DEFAULT_X_MAX_TRAVEL 200.0f // mm
+#define DEFAULT_X_MAX_TRAVEL 507.0f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
 #endif
 #if !defined DEFAULT_Y_MAX_TRAVEL || defined __DOXYGEN__
-#define DEFAULT_Y_MAX_TRAVEL 200.0f // mm
+#define DEFAULT_Y_MAX_TRAVEL 390.0f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
 #endif
 #if !defined DEFAULT_Z_MAX_TRAVEL || defined __DOXYGEN__
 #define DEFAULT_Z_MAX_TRAVEL 200.0f // mm
