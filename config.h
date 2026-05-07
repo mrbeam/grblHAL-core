@@ -697,7 +697,7 @@ the `$G` command.
 \internal Bit 9 in settings.status_report.
 */
 #if !defined DEFAULT_REPORT_PARSER_STATE || defined __DOXYGEN__
-#define DEFAULT_REPORT_PARSER_STATE On // Default off. Set to \ref On or 1 to enable.
+#define DEFAULT_REPORT_PARSER_STATE Off // Default off. Set to \ref On or 1 to enable.
 #endif
 
 /*! \def DEFAULT_REPORT_ALARM_SUBSTATE
@@ -711,7 +711,7 @@ the real time report.
 \internal Bit 10 in settings.status_report.
 */
 #if !defined DEFAULT_REPORT_ALARM_SUBSTATE || defined __DOXYGEN__
-#define DEFAULT_REPORT_ALARM_SUBSTATE On // Default off. Set to \ref On or 1 to enable.
+#define DEFAULT_REPORT_ALARM_SUBSTATE Off // Default off. Set to \ref On or 1 to enable.
 #endif
 
 /*! \def DEFAULT_REPORT_RUN_SUBSTATE
@@ -1913,7 +1913,7 @@ specific - it is _not_ defined in the core.
 */
 ///@{
 #if !defined DEFAULT_STEP_PULSE_MICROSECONDS || defined __DOXYGEN__
-#define DEFAULT_STEP_PULSE_MICROSECONDS 5.0f
+#define DEFAULT_STEP_PULSE_MICROSECONDS 10.0f
 #endif
 ///@}
 
@@ -1926,7 +1926,7 @@ since the spindle may pull down the Z due to its weight.
 */
 ///@{
 #if !defined DEFAULT_STEPPER_IDLE_LOCK_TIME || defined __DOXYGEN__
-#define DEFAULT_STEPPER_IDLE_LOCK_TIME 25 // milliseconds
+#define DEFAULT_STEPPER_IDLE_LOCK_TIME 255 // milliseconds
 #endif
 ///@}
 
@@ -2336,10 +2336,10 @@ __NOTE:__ Must be a positive values.
 */
 ///@{
 #if !defined DEFAULT_X_MAX_TRAVEL || defined __DOXYGEN__
-#define DEFAULT_X_MAX_TRAVEL 507.0f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
+#define DEFAULT_X_MAX_TRAVEL 515.1f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
 #endif
 #if !defined DEFAULT_Y_MAX_TRAVEL || defined __DOXYGEN__
-#define DEFAULT_Y_MAX_TRAVEL 390.0f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
+#define DEFAULT_Y_MAX_TRAVEL 391.1f // mm Arbitrary value that can be updated later by testing the Mr Beam device or setting during runtime.
 #endif
 #if !defined DEFAULT_Z_MAX_TRAVEL || defined __DOXYGEN__
 #define DEFAULT_Z_MAX_TRAVEL 200.0f // mm
