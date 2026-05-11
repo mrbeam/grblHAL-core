@@ -31,6 +31,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "hal.h"
@@ -309,9 +310,13 @@ FLASHMEM static void report_init_message (stream_write_ptr write)
     hal.stream.report.override_counter = hal.stream.report.wco_counter = 0;
 
 #if COMPATIBILITY_LEVEL == 0
-    write(ASCII_EOL "GrblHAL " GRBL_VERSION " ['$' or '$HELP' for help]" ASCII_EOL);
+    char buf[128];
+    sprintf(buf, ASCII_EOL "GrblHAL %s_%s [BB:%u,RX:%u] ['$' or '$HELP' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    write(buf);
 #else
-    write(ASCII_EOL "Grbl " GRBL_VERSION " ['$' for help]" ASCII_EOL);
+    char buf[128];
+    sprintf(buf, ASCII_EOL "Grbl %s_%s [BB:%u,RX:%u] ['$' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    write(buf);
 #endif
 }
 
