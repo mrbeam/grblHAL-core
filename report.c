@@ -36,6 +36,7 @@
 
 #include "hal.h"
 #include "report.h"
+#include "protocol.h"
 #include "nvs_buffer.h"
 #include "machine_limits.h"
 #include "state_machine.h"
@@ -218,9 +219,12 @@ FLASHMEM static status_code_t report_status_message (status_code_t status)
 
     if(hal.stream.is_connected()) {
         if(status == Status_OK)
-            hal.stream.write("ok" ASCII_EOL);
+            hal.stream.write("ok");
         else
-            hal.stream.write(appendbuf(3, "error:", uitoa((uint32_t)status), ASCII_EOL));
+            hal.stream.write(appendbuf(2, "error:", uitoa((uint32_t)status)));
+        if(mrb_checksum_response)
+            hal.stream.write(appendbuf(2, " *", uitoa((uint32_t)mrb_checksum)));
+        hal.stream.write(ASCII_EOL);
     }
 
     return status;
@@ -229,7 +233,13 @@ FLASHMEM static status_code_t report_status_message (status_code_t status)
 // Prints alarm messages.
 FLASHMEM static alarm_code_t report_alarm_message (alarm_code_t alarm_code)
 {
-    hal.stream.write_all(appendbuf(3, "ALARM:", uitoa((uint32_t)alarm_code), ASCII_EOL));
+    if(alarm_code == Alarm_ChecksumFail) {
+        hal.stream.write_all("ALARM: MRB_CHECKSUM_ERROR in ");
+        if(mrb_checksum_failed_line)
+            hal.stream.write_all(mrb_checksum_failed_line);
+        hal.stream.write_all(ASCII_EOL);
+    } else
+        hal.stream.write_all(appendbuf(3, "ALARM:", uitoa((uint32_t)alarm_code), ASCII_EOL));
     hal.delay_ms(100, NULL); // Force delay to ensure message clears output stream buffer.
 
     return alarm_code;
@@ -311,11 +321,11 @@ FLASHMEM static void report_init_message (stream_write_ptr write)
 
 #if COMPATIBILITY_LEVEL == 0
     char buf[128];
-    sprintf(buf, ASCII_EOL "GrblHAL %s_%s [BB:%u,RX:%u] ['$' or '$HELP' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    sprintf(buf, ASCII_EOL "MrblHAL %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' or '$HELP' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
     write(buf);
 #else
     char buf[128];
-    sprintf(buf, ASCII_EOL "Grbl %s_%s [BB:%u,RX:%u] ['$' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    sprintf(buf, ASCII_EOL "Mrbl %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
     write(buf);
 #endif
 }
@@ -1214,11 +1224,11 @@ void report_realtime_status (stream_write_ptr stream_write, status_report_tracki
     switch (gc_state.tool_change && state == STATE_CYCLE ? STATE_TOOL_CHANGE : state) {
 
         case STATE_IDLE:
-            stream_write("Idle");
+            stream_write("Id");
             break;
 
         case STATE_CYCLE:
-            stream_write("Run");
+            stream_write("R");
             if(sys.probing_state == Probing_Active && settings.status_report.run_substate)
                 probing = true;
             else if (probing)
@@ -1230,39 +1240,39 @@ void report_realtime_status (stream_write_ptr stream_write, status_report_tracki
             break;
 
         case STATE_HOLD:
-            stream_write(appendbuf(2, "Hold:", uitoa((uint32_t)(sys.holding_state - 1))));
+            stream_write(appendbuf(2, "Hd:", uitoa((uint32_t)(sys.holding_state - 1))));
             break;
 
         case STATE_JOG:
-            stream_write("Jog");
+            stream_write("Jg");
             break;
 
         case STATE_HOMING:
-            stream_write("Home");
+            stream_write("Hm");
             break;
 
         case STATE_ESTOP:
         case STATE_ALARM:
             if((report->flags.all || settings.status_report.alarm_substate) && sys.alarm)
-                stream_write(appendbuf(2, "Alarm:", uitoa((uint32_t)sys.alarm)));
+                stream_write(appendbuf(2, "Al:", uitoa((uint32_t)sys.alarm)));
             else
-                stream_write("Alarm");
+                stream_write("Al");
             break;
 
         case STATE_CHECK_MODE:
-            stream_write("Check");
+            stream_write("Ck");
             break;
 
         case STATE_SAFETY_DOOR:
-            stream_write(appendbuf(2, "Door:", uitoa((uint32_t)sys.parking_state)));
+            stream_write(appendbuf(2, "Dr:", uitoa((uint32_t)sys.parking_state)));
             break;
 
         case STATE_SLEEP:
-            stream_write("Sleep");
+            stream_write("Sl");
             break;
 
         case STATE_TOOL_CHANGE:
-            stream_write("Tool");
+            stream_write("Tc");
             break;
     }
 
@@ -1287,7 +1297,7 @@ void report_realtime_status (stream_write_ptr stream_write, status_report_tracki
     }
 
     // Report position
-    stream_write(settings.status_report.machine_position ? "|MPos:" : "|WPos:");
+    stream_write(settings.status_report.machine_position ? "|M:" : "|W:");
     stream_write(get_axis_values(print_position));
 
     // Returns planner and output stream buffer states.

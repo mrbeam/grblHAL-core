@@ -41,6 +41,12 @@ typedef union {
     on_execute_realtime_ptr fn_deprecated;
 } fg_task_ptr __attribute__ ((__transparent_union__));
 
+// Mr Beam checksum state for the current serial command. Reset on soft reset.
+extern bool mrb_checksum_enabled;
+extern bool mrb_checksum_response;
+extern uint8_t mrb_checksum;
+extern const char *mrb_checksum_failed_line;
+
 // Starts grblHAL main loop. It handles all incoming characters from the input stream and executes
 // them as they complete. It is also responsible for finishing the initialization procedures.
 bool protocol_main_loop (void);

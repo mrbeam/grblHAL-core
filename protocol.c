@@ -21,6 +21,7 @@
   along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -33,10 +34,34 @@
 #include "sleep.h"
 #include "protocol.h"
 #include "machine_limits.h"
+#include "mrb_checksum.h"
+#include "mrb_raster.h"
 
 #ifndef RT_QUEUE_SIZE
 #define RT_QUEUE_SIZE 16 // must be a power of 2
 #endif
+
+// Expand validated raster frames through the normal G-code execution path so
+// limits, check mode, overrides, laser synchronization and aborts still apply.
+static status_code_t protocol_execute_mrb_raster (char *line)
+{
+    mrb_raster_frame_t frame;
+    if(!mrb_raster_decode(line, &frame) || !gc_state.modal.distance_incremental ||
+       gc_state.modal.units_imperial || gc_state.modal.feed_mode != FeedMode_UnitsPerMin)
+        return Status_InvalidStatement;
+    for(uint_fast8_t i = 0; i < frame.count; i++) {
+        mrb_raster_move_t *move = &frame.moves[i];
+        char block[48];
+        snprintf(block, sizeof(block), "G1X%s%u.%02uS%uF%u",
+                 frame.negative ? "-" : "", (unsigned int)(move->dx / 100),
+                 (unsigned int)(move->dx % 100), (unsigned int)move->intensity * 8,
+                 (unsigned int)move->feed * 100);
+        status_code_t status = gc_execute_block(block);
+        if(status != Status_OK || ABORTED)
+            return status;
+    }
+    return Status_OK;
+}
 
 // Define line flags. Includes comment type tracking and line overflow detection.
 typedef union {
@@ -50,6 +75,11 @@ typedef union {
 } line_flags_t;
 
 extern void task_execute_on_startup (void);
+
+bool mrb_checksum_enabled = false;
+bool mrb_checksum_response = false;
+uint8_t mrb_checksum = 0;
+const char *mrb_checksum_failed_line = NULL;
 
 static uint_fast16_t char_counter = 0;
 static char line[LINE_BUFFER_SIZE]; // Line to be executed. Zero-terminated.
@@ -198,6 +228,10 @@ bool protocol_main_loop (void)
     int32_t c;
     char eol = '\0';
     line_flags_t line_flags = {0};
+    mrb_checksum_rx_t checksum_rx = {0};
+    mrb_checksum_enabled = mrb_checksum_response = false;
+    mrb_checksum = 0;
+    mrb_checksum_failed_line = NULL;
 
     xcommand[0] = '\0';
     char_counter = 0;
@@ -211,6 +245,8 @@ bool protocol_main_loop (void)
 
             if(c == ASCII_CAN) {
 
+                checksum_rx = (mrb_checksum_rx_t){0};
+                mrb_checksum_response = false;
                 eol = xcommand[0] = '\0';
                 keep_rt_commands = false;
                 char_counter = line_flags.value = 0;
@@ -226,7 +262,7 @@ bool protocol_main_loop (void)
 
                 // Check for possible secondary end of line character, do not process as empty line
                 // if part of crlf (or lfcr pair) as this produces a possibly unwanted double response
-                if(char_counter == 0 && eol && eol != c) {
+                if(char_counter == 0 && !checksum_rx.payload && !checksum_rx.trailer && eol && eol != c) {
                     eol = '\0';
                     continue;
                 } else
@@ -240,6 +276,34 @@ bool protocol_main_loop (void)
               #if REPORT_ECHO_LINE_RECEIVED
                 report_echo_line_received(line);
               #endif
+
+                if(checksum_rx.trailer)
+                    mrb_checksum_enabled = true;
+                mrb_checksum = checksum_rx.sum;
+                mrb_checksum_response = mrb_checksum_enabled && (checksum_rx.payload || checksum_rx.trailer);
+
+                if(!mrb_checksum_valid(&checksum_rx, mrb_checksum_enabled)) {
+                    // Match legacy recovery: queue trusted S0 so buffered motion
+                    // finishes with laser off, then lock out subsequent G-code.
+                    // Never execute any part of the corrupted command.
+                    mrb_checksum_response = false;
+                    if(!(state_get() & (STATE_ALARM|STATE_ESTOP))) {
+                        char laser_off[] = "S0";
+                        gc_execute_block(laser_off);
+                    }
+                    spindle_all_off(false);
+                    mrb_checksum_failed_line = line;
+                    if(sys.alarm == Alarm_ChecksumFail)
+                        grbl.report.alarm_message(Alarm_ChecksumFail);
+                    else
+                        system_raise_alarm(Alarm_ChecksumFail);
+                    mrb_checksum_failed_line = NULL;
+                    gc_state.last_error = Status_OK; // Allow resending after a checked $X.
+                    keep_rt_commands = false;
+                    char_counter = line_flags.value = 0;
+                    checksum_rx = (mrb_checksum_rx_t){0};
+                    continue; // The alarm replaces the normal acknowledgement.
+                }
 
                 // Direct and execute one line of formatted input, and report status of execution.
                 if (line_flags.overflow) // Report line overflow error.
@@ -268,7 +332,8 @@ bool protocol_main_loop (void)
                 else { // Parse and execute g-code block.
 
 #endif
-                    if((gc_state.last_error = gc_execute_block(line)) != Status_OK)
+                    if((gc_state.last_error = (line[0] == 'G' && (line[1] == '7' || line[1] == '8') && line[2] == 'N'
+                                              ? protocol_execute_mrb_raster(line) : gc_execute_block(line))) != Status_OK)
                         eol = '\0';
                 }
 
@@ -288,8 +353,12 @@ bool protocol_main_loop (void)
                 // Reset tracking data for next line.
                 keep_rt_commands = false;
                 char_counter = line_flags.value = 0;
+                checksum_rx = (mrb_checksum_rx_t){0};
+                mrb_checksum_response = false;
 
-            } else if (c != ASCII_BS && c <= (char_counter > 0 ? ' ' - 1 : ' '))
+            } else if(mrb_checksum_feed(&checksum_rx, (uint8_t)c))
+                continue;
+            else if (c != ASCII_BS && c <= (char_counter > 0 ? ' ' - 1 : ' '))
                 continue; // Strip control characters and leading whitespace.
             else {
                 switch(c) {
