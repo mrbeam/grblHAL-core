@@ -1591,7 +1591,7 @@ Unset bits in the mask results in movement in positive direction.
 */
 ///@{
 #if !defined DEFAULT_HOMING_FEED_RATE || defined __DOXYGEN__
-#define DEFAULT_HOMING_FEED_RATE 100.0f // mm/min
+#define DEFAULT_HOMING_FEED_RATE 25.0f // mm/min
 #endif
 ///@}
 
