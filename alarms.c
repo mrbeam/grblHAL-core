@@ -48,7 +48,8 @@ PROGMEM static const alarm_detail_t alarm_detail[] = {
     { Alarm_ModbusException, "Modbus exception. Timeout or message error." },
     { Alarm_ExpanderException, "I/O expander communication failed." },
     { Alarm_NVS_Failed, "Non Volatile Storage (EEPROM) failure." },
-    { Alarm_BufferOverflow, "Buffer overflow." }
+    { Alarm_BufferOverflow, "Buffer overflow." },
+    { Alarm_ChecksumFail, "Checksum failure. Received data was corrupted." }
 };
 
 static alarm_details_t details = {

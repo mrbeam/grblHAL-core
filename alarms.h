@@ -50,7 +50,8 @@ typedef enum {
     Alarm_ExpanderException = 20,               //!< 20
     Alarm_NVS_Failed = 21,                      //!< 21
     Alarm_BufferOverflow = 22,                  //!< 22
-    Alarm_AlarmMax = Alarm_BufferOverflow
+    Alarm_ChecksumFail = 23,                    //!< 23
+    Alarm_AlarmMax = Alarm_ChecksumFail
 } __attribute__ ((__packed__)) alarm_code_t;
 
 typedef struct {
