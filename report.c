@@ -39,6 +39,13 @@
 #include "protocol.h"
 #include "nvs_buffer.h"
 #include "machine_limits.h"
+
+#ifdef GRBL_CORE_VERSION_HEADER
+#include GRBL_CORE_VERSION_HEADER
+#endif
+#ifdef GRBL_RP2040_VERSION_HEADER
+#include GRBL_RP2040_VERSION_HEADER
+#endif
 #include "state_machine.h"
 #include "canbus.h"
 #include "regex.h"
@@ -320,12 +327,12 @@ FLASHMEM static void report_init_message (stream_write_ptr write)
     hal.stream.report.override_counter = hal.stream.report.wco_counter = 0;
 
 #if COMPATIBILITY_LEVEL == 0
-    char buf[128];
-    sprintf(buf, ASCII_EOL "MrblHAL %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' or '$HELP' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    char buf[256];
+    snprintf(buf, sizeof(buf), ASCII_EOL "MrblHAL %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' or '$HELP' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
     write(buf);
 #else
-    char buf[128];
-    sprintf(buf, ASCII_EOL "Mrbl %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
+    char buf[256];
+    snprintf(buf, sizeof(buf), ASCII_EOL "Mrbl %s_%s [BB:%u,RX:%u,MRBCHK:1] ['$' for help]" ASCII_EOL, GRBL_VERSION, GRBL_BUILD_COMPILED, DEFAULT_PLANNER_BUFFER_BLOCKS, RX_BUFFER_SIZE);
     write(buf);
 #endif
 }
@@ -929,6 +936,12 @@ FLASHMEM void report_build_info (char *line, bool extended)
     hal.stream.write(":");
     hal.stream.write(line);
     hal.stream.write("]" ASCII_EOL);
+#ifdef GRBL_CORE_VERSION
+    hal.stream.write("[CORE:" GRBL_CORE_VERSION "]" ASCII_EOL);
+#endif
+#ifdef GRBL_RP2040_VERSION
+    hal.stream.write("[RP2040:" GRBL_RP2040_VERSION "]" ASCII_EOL);
+#endif
 
 #if COMPATIBILITY_LEVEL == 0
     extended = true;

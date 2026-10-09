@@ -54,3 +54,33 @@ target_sources(grbl INTERFACE
  ${CMAKE_CURRENT_LIST_DIR}/kinematics/polar.c
  ${CMAKE_CURRENT_LIST_DIR}/kinematics/rtcp_ac.c
 )
+
+# Refresh versions on every build, including tag changes without reconfiguration.
+function(grbl_generate_version TARGET SOURCE MACRO OVERRIDE_NAME)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    set(${OVERRIDE_NAME} "" CACHE STRING "Explicit firmware version for source archives")
+    set(HEADER "${CMAKE_CURRENT_BINARY_DIR}/${MACRO}.h")
+    set(SCRIPT "${GRBL_VERSION_GENERATOR}")
+    set(ARGS --source-dir "${SOURCE}" --output "${HEADER}" --macro "${MACRO}")
+    if(${OVERRIDE_NAME})
+        list(APPEND ARGS --version-override "${${OVERRIDE_NAME}}")
+    endif()
+    execute_process(COMMAND "${Python3_EXECUTABLE}" "${SCRIPT}" ${ARGS} RESULT_VARIABLE RESULT)
+    if(NOT RESULT EQUAL 0)
+        message(FATAL_ERROR "Could not generate ${MACRO}")
+    endif()
+    add_custom_target(${TARGET}_version
+        COMMAND "${Python3_EXECUTABLE}" "${SCRIPT}" ${ARGS}
+        BYPRODUCTS "${HEADER}" DEPENDS "${SCRIPT}" VERBATIM)
+    add_dependencies(${TARGET} ${TARGET}_version)
+    get_target_property(TYPE ${TARGET} TYPE)
+    if(TYPE STREQUAL "INTERFACE_LIBRARY")
+        set(SCOPE INTERFACE)
+    else()
+        set(SCOPE PUBLIC)
+    endif()
+    target_compile_definitions(${TARGET} ${SCOPE} ${MACRO}_HEADER="${HEADER}")
+endfunction()
+
+set(GRBL_VERSION_GENERATOR "${CMAKE_CURRENT_LIST_DIR}/tools/generate_version.py")
+grbl_generate_version(grbl "${CMAKE_CURRENT_LIST_DIR}" GRBL_CORE_VERSION GRBL_CORE_VERSION_OVERRIDE)
